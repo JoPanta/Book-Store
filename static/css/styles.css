@@ -1,0 +1,34 @@
+#banner {
+    background-image: url("../images/map.png");
+
+    box-shadow: inset 0 0 0 1000px rgba(20, 33, 61, .6);
+    }
+
+.card {
+    max-width: 18rem;
+}
+
+.card-body {
+    height: 150px;
+    overflow: hidden;
+}
+
+.book-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.author, .book-a-tag {
+    text-decoration: none;
+}
+
+.album {
+  background-image: url("../images/black-bg.jpg");
+}
+
+.header {
+  background-image: url("../images/black-bg.jpg");
+  background-size: cover;
+  background-position: center top;
+}
