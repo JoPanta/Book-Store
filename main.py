@@ -4,12 +4,17 @@ from flask_bootstrap import Bootstrap5
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectMultipleField, SelectField, BooleanField
 from wtforms.validators import DataRequired, URL
+import stripe
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secretcode'
 Bootstrap5(app)
 
+
+# stripe configuration
+app.config["STRIPE_PUBLIC_KEY"] = "pk_test_51OSP3yJsLunIJogOr4E931yptIqQEJgSLEMpbdgymXlrZoTjokeYPIJuDEbUYYNSFKcNaXVJhiPse6nzKTjpR1mV00OkuvAHzp"
+app.config['STRIPE_SECRET_KEY'] = "sk_test_51OSP3yJsLunIJogOzzky5qw77aFjMYzb7XRWX4RBldEiakNBmiqM2FUdnbVXwQCRh6MhOYDi7hotk0LajhTZPQhi00VVcgbIzv"
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///books.db"
 db = SQLAlchemy()
@@ -63,7 +68,9 @@ def add():
         return redirect("/")
     return render_template("add.html", form=form)
 
-
+@app.route("/thanks")
+def thanks():
+    return render_template("thanks.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
