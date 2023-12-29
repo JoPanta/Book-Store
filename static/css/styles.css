@@ -1,7 +1,7 @@
 #banner {
     background-image: url("../images/map.png");
 
-    box-shadow: inset 0 0 0 1000px rgba(20, 33, 61, .6);
+    box-shadow: inset 0 0 0 1000px rgba(0,0,0, .8);
     }
 
 .card {
