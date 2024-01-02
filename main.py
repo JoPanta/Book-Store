@@ -59,15 +59,11 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(250), nullable=False)
     name = db.Column(db.String(250), nullable=False)
 
-    def __repr__(self):
-        return f"<User {self.name}>"
 
 
 with app.app_context():
     db.create_all()
 
-    def __repr__(self):
-        return f"<Book {self.title}>"
 
 
 class AddForm(FlaskForm):

@@ -58,7 +58,7 @@
         ><span id="boot-icon" class="bi bi-cart mx-3" style="font-size: 33px; color: rgb(255, 255, 255);"></span>
         </a>
           {% if current_user.is_authenticated: %}
-          <span class="text-white">Welcome {{ current_user.name }}</span>
+          <b><span class="text-white">Welcome {{ current_user.name }}</span></b>
           {% endif %}
       </div>
 
