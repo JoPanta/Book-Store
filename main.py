@@ -32,7 +32,17 @@ db = SQLAlchemy()
 db.init_app(app)
 
 
-# books database
+# User database
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(250), unique=True, nullable=False)
+    password = db.Column(db.String(250), nullable=False)
+    name = db.Column(db.String(250), nullable=False)
+    carts = db.relationship("Cart", backref='user', lazy=True)
+    favorites = db.relationship("Favorite", backref='user', lazy=True)
+
+
+# Books database
 class Books(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(250), unique=True, nullable=False)
@@ -42,28 +52,27 @@ class Books(db.Model):
     price = db.Column(db.Float,  nullable=False)
     price_code = db.Column(db.String(250),  nullable=False)
     stock = db.Column(db.Integer, nullable=False)
-
-    def __repr__(self):
-        return f"<Book {self.title}>"
-
-
-# with app.app_context():
-#     db.create_all()
+    carts = db.relationship("Cart", backref='book', lazy=True)
+    favorites = db.relationship("Favorite", backref='book', lazy=True)
 
 
-# user database
-class User(UserMixin, db.Model):
-    __tablename__ = "users"
+# Cart database
+class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(250), unique=True, nullable=False)
-    password = db.Column(db.String(250), nullable=False)
-    name = db.Column(db.String(250), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False, default=1)
 
+
+# Favorite database
+class Favorite(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
 
 
 with app.app_context():
     db.create_all()
-
 
 
 class AddForm(FlaskForm):

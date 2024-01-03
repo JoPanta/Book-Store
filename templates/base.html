@@ -26,24 +26,21 @@
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
 
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-          <li><a href="/" class="nav-link px-2 text-warning">Home</a></li>
-          <li><a href="#" class="nav-link px-2 text-white">Features</a></li>
-          <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
-          <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
-          <li><a href="{{ url_for('add') }}" class="nav-link px-2 text-white">Add</a></li>
+          <li><a href="#" class="fs-5 px-2 fw-bold home-add">Home</a></li>
+          <li><a href="#" class="fs-5 px-2 fw-bold home-add">Add book</a></li>
         </ul>
 
         <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-          <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
+          <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
         </form>
 
         <div class="text-end">
             {% if not current_user.is_authenticated: %}
             <a href="{{ url_for('login') }}">
-          <button type="button" class="btn btn-outline-light me-2">Login</button>
+          <button type="button" class="btn btn-outline-dark me-2">Login</button>
             </a>
             <a href="{{ url_for('register') }}">
-          <button type="button" class="btn btn-warning">Register</button>
+          <button type="button" class="btn btn-outline-dark">Register</button>
             </a>
             {% else: %}
             <a href="{{ url_for('logout') }}">
@@ -55,7 +52,7 @@
 
         </div>
         <a href="" id="cart-icon" class="text-decoration-none"
-        ><span id="boot-icon" class="bi bi-cart mx-3" style="font-size: 33px; color: rgb(255, 255, 255);"></span>
+        ><span id="boot-icon" class="bi bi-cart mx-3" style="font-size: 33px; color: rgb(107, 112, 92);"></span>
         </a>
           {% if current_user.is_authenticated: %}
           <b><span class="text-white">Welcome {{ current_user.name }}</span></b>
@@ -70,13 +67,13 @@
 <div class="container">
   <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
     <div class="col-md-4 d-flex align-items-center">
-      <span class="mb-3 mb-md-0 text-white">© 2023 MidWorldBookStore, Inc</span>
+      <b><span class="mb-3 mb-md-0" style="color: rgb(107, 112, 92);">© 2023 MidWorldBookStore, Inc</span></b>
     </div>
 
     <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-      <li class="ms-3"><a class="text-white" href="#"><span id="threads-icon" class="bi bi-threads" style="font-size: 30px;"></span></a></li>
-      <li class="ms-3"><a class="text-white" href="#"><span id="insta-icon" class="bi bi-instagram" style="font-size: 30px;"></span></a></li>
-      <li class="ms-3"><a class="text-white" href="#"><span id="facebook-icon" class="bi bi-facebook" style="font-size: 30px;"></span></a></li>
+      <li class="ms-3"><a  href="#"><span id="threads-icon" class="bi bi-threads" style="font-size: 30px; color: rgb(107, 112, 92);"></span></a></li>
+      <li class="ms-3"><a  href="#"><span id="insta-icon" class="bi bi-instagram" style="font-size: 30px; color: rgb(107, 112, 92);"></span></a></li>
+      <li class="ms-3"><a  href="#"><span id="facebook-icon" class="bi bi-facebook" style="font-size: 30px; color: rgb(107, 112, 92);"></span></a></li>
     </ul>
   </footer>
 </div>
