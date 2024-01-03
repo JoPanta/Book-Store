@@ -20,14 +20,14 @@
             <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
     {% endblock %}
 </head>
-<body>
-<header class="header p-3">
+<body class="beige">
+<header class="header beige p-3">
 
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
 
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-          <li><a href="#" class="fs-5 px-2 fw-bold home-add">Home</a></li>
-          <li><a href="#" class="fs-5 px-2 fw-bold home-add">Add book</a></li>
+          <li><a href="/" class="fs-5 px-2 fw-bold home-add">Home</a></li>
+          <li><a href="{{ url_for('add') }}" class="fs-5 px-2 fw-bold home-add">Add book</a></li>
         </ul>
 
         <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">

@@ -4,9 +4,10 @@
     box-shadow: inset 0 0 0 1000px rgba(254, 250, 224, .5);
     }
 
-.header, .album {
+.beige {
     background-color: rgb(255, 251, 243)
  }
+
 
 .home-add {
     text-decoration: none;
