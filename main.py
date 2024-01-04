@@ -5,27 +5,29 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectMultipleField, SelectField, BooleanField, PasswordField
 from wtforms.validators import DataRequired, URL
 import stripe
-from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user
+from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secretcode'
+app.config['SECRET_KEY'] = 'your_secret_key'
 Bootstrap5(app)
 
 # Configure Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+
 @login_manager.user_loader
 def load_user(user_id):
-    return db.get_or_404(User, user_id)
+    return User.query.get(int(user_id))
+
 
 # stripe configuration
-app.config["STRIPE_PUBLIC_KEY"] = "pk_test_51OSP3yJsLunIJogOr4E931yptIqQEJgSLEMpbdgymXlrZoTjokeYPIJuDEbUYYNSFKcNaXVJhiPse6nzKTjpR1mV00OkuvAHzp"
-app.config['STRIPE_SECRET_KEY'] = "sk_test_51OSP3yJsLunIJogOzzky5qw77aFjMYzb7XRWX4RBldEiakNBmiqM2FUdnbVXwQCRh6MhOYDi7hotk0LajhTZPQhi00VVcgbIzv"
+app.config[
+    "STRIPE_PUBLIC_KEY"] = "pk_test_51OSP3yJsLunIJogOr4E931yptIqQEJgSLEMpbdgymXlrZoTjokeYPIJuDEbUYYNSFKcNaXVJhiPse6nzKTjpR1mV00OkuvAHzp"
+app.config[
+    'STRIPE_SECRET_KEY'] = "sk_test_51OSP3yJsLunIJogOzzky5qw77aFjMYzb7XRWX4RBldEiakNBmiqM2FUdnbVXwQCRh6MhOYDi7hotk0LajhTZPQhi00VVcgbIzv"
 stripe.api_key = app.config['STRIPE_SECRET_KEY']
-
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///books.db"
 db = SQLAlchemy()
@@ -48,9 +50,9 @@ class Books(db.Model):
     title = db.Column(db.String(250), unique=True, nullable=False)
     author = db.Column(db.String(250), nullable=False)
     review = db.Column(db.String(1000), nullable=False)
-    img_url = db.Column(db.String(250),  nullable=False)
-    price = db.Column(db.Float,  nullable=False)
-    price_code = db.Column(db.String(250),  nullable=False)
+    img_url = db.Column(db.String(250), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    price_code = db.Column(db.String(250), nullable=False)
     stock = db.Column(db.Integer, nullable=False)
     carts = db.relationship("Cart", backref='book', lazy=True)
     favorites = db.relationship("Favorite", backref='book', lazy=True)
@@ -88,22 +90,33 @@ class AddForm(FlaskForm):
 
 # Create a form to register new users
 class RegisterForm(FlaskForm):
-    email = StringField("Email", validators=[DataRequired()])
-    password = PasswordField("Password", validators=[DataRequired()])
-    name = StringField("Name", validators=[DataRequired()])
+    email = StringField("Email:", validators=[DataRequired()])
+    name = StringField("Name:", validators=[DataRequired()])
+    password = PasswordField("Password:", validators=[DataRequired()])
+
     submit = SubmitField("Sign Me Up!")
 
 
 # Create a form to login existing users
 class LoginForm(FlaskForm):
-    email = StringField("Email", validators=[DataRequired()])
-    password = PasswordField("Password", validators=[DataRequired()])
+    email = StringField("Email:", validators=[DataRequired()])
+    password = PasswordField("Password:", validators=[DataRequired()])
     submit = SubmitField("Let Me In!")
 
 
-@app.route('/', methods=["GET",'POST'])
+@app.route('/', methods=["GET", 'POST'])
 def home():
     books = Books.query.all()
+
+    if request.method == 'POST' and current_user.is_authenticated:
+        book_id_to_add = request.form.get('add_to_favorites')
+        if book_id_to_add:
+            print(current_user.name)
+            book = Books.query.get(int(book_id_to_add))
+            print(book.title)
+            current_user.favorites.append(book)
+            db.session.commit()
+
     return render_template("index.html", books=books, current_user=current_user)
 
 
@@ -140,7 +153,8 @@ def add():
         price = form.price.data
         price_code = form.price_code.data
         stock = form.stock.data
-        book = Books(title=title, author=author, review=review, img_url=img_url, price=price, stock=stock, price_code=price_code)
+        book = Books(title=title, author=author, review=review, img_url=img_url, price=price, stock=stock,
+                     price_code=price_code)
         db.session.add(book)
         db.session.commit()
         return redirect("/")
@@ -151,7 +165,7 @@ def add():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        #check if the user is already in the database
+        # check if the user is already in the database
         result = db.session.execute(db.select(User).where(User.email == form.email.data))
         user = result.scalar()
         if user:
@@ -177,6 +191,18 @@ def register():
     return render_template("register.html", form=form, current_user=current_user)
 
 
+# @app.route('/add-to-favorites/<int:book_id>', methods=["GET", 'POST'])
+# @login_required
+# def add_to_favorites(book_id):
+#     book = Books.query.get(book_id)
+#
+#     if book:
+#         current_user.favorites.append(book)
+#         db.session.commit()
+#
+#     return redirect(url_for('home'))
+
+
 @app.route('/login', methods=["GET", "POST"])
 def login():
     form = LoginForm()
@@ -195,6 +221,8 @@ def login():
             return redirect(url_for('login'))
         else:
             login_user(user)
+            print(user)
+            print(current_user)
             return redirect(url_for('home'))
 
     return render_template("login.html", form=form, current_user=current_user)
@@ -205,9 +233,11 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+
 @app.route("/thanks")
 def thanks():
     return render_template("thanks.html")
+
 
 if __name__ == '__main__':
     app.run(debug=True)

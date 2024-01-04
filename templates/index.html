@@ -25,7 +25,13 @@
                 <form action="/create-checkout-session/{{ book.id }}" method="POST">
                   <button type="submit" id="checkout-button" class="btn btn-sm btn-outline-dark mt-3">Buy</button>
                 </form>
-                    <a href=""><button type="submit" id="favorite-button" class="btn btn-sm btn-outline-dark mt-3">🤍</button></a>
+                    {% if current_user.is_authenticated %}
+                    <form method="post" action="{{ url_for('home') }}">
+                    <input type="hidden" name="add_to_favorites" value="{{ book.id }}">
+                    <button type="submit" id="favorite-button" class="btn btn-sm btn-outline-dark mt-3">🤍</button>
+                    </form>
+                    {% endif %}
+
 
 
                 </div>
