@@ -22,13 +22,13 @@
                    <p class="card-text text-dark mb-0 ">{{ book.price }}$</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
-                <form action="/create-checkout-session/{{ book.id }}" method="POST">
-                  <button type="submit" id="checkout-button" class="btn btn-sm btn-outline-dark mt-3">Buy</button>
-                </form>
+<!--                <form action="/create-checkout-session/{{ book.id }}" method="POST">-->
+<!--                  <button type="submit" id="checkout-button" class="btn btn-sm btn-outline-dark mt-3">Buy</button>-->
+<!--                </form>-->
                     {% if current_user.is_authenticated %}
                     <form method="post" action="{{ url_for('home') }}">
-                    <input type="hidden" name="add_to_favorites" value="{{ book.id }}">
-                    <button type="submit" id="favorite-button" class="btn btn-sm btn-outline-dark mt-3">🤍</button>
+                    <input type="hidden" name="add_to_cart" value="{{ book.id }}">
+                    <button type="submit" id="cart-button" class="btn btn-sm btn-outline-dark mt-3">Buy</button>
                     </form>
                     {% endif %}
 

@@ -7,6 +7,7 @@ from wtforms.validators import DataRequired, URL
 import stripe
 from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.orm import joinedload
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -109,13 +110,13 @@ def home():
     books = Books.query.all()
 
     if request.method == 'POST' and current_user.is_authenticated:
-        book_id_to_add = request.form.get('add_to_favorites')
+        book_id_to_add = request.form.get('add_to_cart')
         if book_id_to_add:
-            print(current_user.name)
             book = Books.query.get(int(book_id_to_add))
-            print(book.title)
-            current_user.favorites.append(book)
-            db.session.commit()
+            if book:
+                cart_item = Cart(user_id=current_user.id, book_id=book.id, quantity=1)
+                db.session.add(cart_item)
+                db.session.commit()
 
     return render_template("index.html", books=books, current_user=current_user)
 
@@ -227,6 +228,23 @@ def login():
 
     return render_template("login.html", form=form, current_user=current_user)
 
+
+@app.route('/cart')
+def view_cart():
+    if current_user.is_authenticated:
+        books = Books.query.all()
+        books_to_buy=[]
+        total_price = 0
+        cart_items = Cart.query.filter_by(user_id=current_user.id).all()
+        for item in cart_items:
+            book = Books.query.get(item.book_id)
+            if book:
+                total_price += book.price
+                books_to_buy.append(book)
+        return render_template('cart.html', cart=books_to_buy, total=total_price)
+    else:
+        flash('Please log in to view your cart.')
+        return redirect(url_for('login'))
 
 @app.route('/logout')
 def logout():
