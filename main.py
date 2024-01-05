@@ -121,18 +121,23 @@ def home():
     return render_template("index.html", books=books, current_user=current_user)
 
 
-@app.route('/create-checkout-session/<int:book_id>', methods=['POST'])
-def create_checkout_session(book_id):
-    book = Books.query.get(book_id)
+@app.route('/create-checkout-session', methods=['POST'])
+@login_required
+def create_checkout_session():
+    user_cart = Cart.query.filter_by(user_id=current_user.id).all()
+
+    line_items = []
+
+    # Create line items for each book in the cart
+    for cart_item in user_cart:
+        line_items.append({
+            'price': cart_item.book.price_code,
+            'quantity': cart_item.quantity,
+        })
+
     try:
         checkout_session = stripe.checkout.Session.create(
-            line_items=[
-                {
-                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                    'price': book.price_code,
-                    'quantity': 1,
-                },
-            ],
+            line_items=line_items,
             mode='payment',
             success_url=url_for('thanks', _external=True),
             cancel_url=url_for("home", _external=True),
@@ -229,19 +234,45 @@ def login():
     return render_template("login.html", form=form, current_user=current_user)
 
 
-@app.route('/cart')
+@app.route('/cart', methods=["GET", "POST"])
 def view_cart():
     if current_user.is_authenticated:
-        books = Books.query.all()
-        books_to_buy=[]
-        total_price = 0
-        cart_items = Cart.query.filter_by(user_id=current_user.id).all()
-        for item in cart_items:
-            book = Books.query.get(item.book_id)
-            if book:
-                total_price += book.price
-                books_to_buy.append(book)
-        return render_template('cart.html', cart=books_to_buy, total=total_price)
+        if request.method == 'POST':
+            user_cart = Cart.query.filter_by(user_id=current_user.id).all()
+
+            line_items = []
+
+            # Create line items for each book in the cart
+            for cart_item in user_cart:
+                line_items.append({
+                    'price': cart_item.book.price_code,
+                    'quantity': cart_item.quantity,
+                })
+
+            try:
+                checkout_session = stripe.checkout.Session.create(
+                    line_items=line_items,
+                    mode='payment',
+                    success_url=url_for('thanks', _external=True),
+                    cancel_url=url_for("home", _external=True),
+                )
+            except Exception as e:
+                return str(e)
+
+            return redirect(checkout_session.url, code=303)
+        else:
+            books_to_buy = []
+            total_price = 0
+            number_of_books = 0
+            cart_items = Cart.query.filter_by(user_id=current_user.id).all()
+            for item in cart_items:
+                book = Books.query.get(item.book_id)
+                if book:
+                    total_price += book.price
+                    number_of_books += 1
+                    books_to_buy.append(book)
+            return render_template('cart.html', cart=books_to_buy, total=total_price, number_of_books=number_of_books)
+
     else:
         flash('Please log in to view your cart.')
         return redirect(url_for('login'))
