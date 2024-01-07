@@ -28,12 +28,12 @@
                     {% if current_user.is_authenticated %}
                     <form method="post" action="{{ url_for('home') }}">
                     <input type="hidden" name="add_to_cart" value="{{ book.id }}">
-                    <button type="submit" id="cart-button" class="btn btn-sm btn-outline-dark mt-3">Buy</button>
+                    <button type="submit" id="cart-button" class="btn btn-sm btn-outline-dark mt-3">Add to Cart</button>
                     </form>
                     {% else %}
                     <form method="post" action="{{ url_for('login') }}">
                     <input type="hidden" name="add_to_cart" value="{{ book.id }}">
-                    <button type="submit" id="cart-button_2" class="btn btn-sm btn-outline-dark mt-3">Buy</button>
+                    <button type="submit" id="cart-button_2" class="btn btn-sm btn-outline-dark mt-3">Add to Cart</button>
                     </form>
                     {% endif %}
                     {% if current_user.is_authenticated and current_user.id == 1 %}
