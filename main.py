@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, flash, abort
+from flask import Flask, render_template, redirect, url_for, request, flash, abort, current_app
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap5
 from flask_wtf import FlaskForm
@@ -89,6 +89,9 @@ class AddForm(FlaskForm):
     submit = SubmitField("Submit")
 
 
+
+
+
 # Create a form to register new users
 class RegisterForm(FlaskForm):
     email = StringField("Email:", validators=[DataRequired()])
@@ -105,9 +108,19 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Let Me In!")
 
 
+def get_books_in_cart():
+    with current_app.app_context():
+        if current_user.is_authenticated:
+            cart = Cart.query.filter_by(user_id=current_user.id).all()
+            books_in_cart = len(cart)
+            return books_in_cart
+        return 0
+
 @app.route('/', methods=["GET", 'POST'])
 def home():
     books = Books.query.all()
+
+    books_in_cart = get_books_in_cart()
 
     if request.method == 'POST' and current_user.is_authenticated:
         book_id_to_add = request.form.get('add_to_cart')
@@ -117,8 +130,9 @@ def home():
                 cart_item = Cart(user_id=current_user.id, book_id=book.id, quantity=1)
                 db.session.add(cart_item)
                 db.session.commit()
+                books_in_cart = get_books_in_cart()
 
-    return render_template("index.html", books=books, current_user=current_user)
+    return render_template("index.html", books=books, current_user=current_user, books_in_cart=books_in_cart)
 
 
 @app.route('/create-checkout-session', methods=['POST'])
@@ -195,6 +209,19 @@ def register():
         login_user(new_user)
         return redirect(url_for('home'))
     return render_template("register.html", form=form, current_user=current_user)
+
+def add_to_cart(book_id, user_id):
+    try:
+        book = Books.query.get(book_id)
+        if book:
+            cart_item = Cart(user_id=user_id, book_id=book.id, quantity=1)
+            db.session.add(cart_item)
+            db.session.commit()
+            flash(f"{book.title} added to cart successfully!", "success")
+        else:
+            flash("Book not found.", "error")
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
 
 
 # @app.route('/add-to-favorites/<int:book_id>', methods=["GET", 'POST'])
@@ -321,6 +348,27 @@ def delete_book(book_id):
     else:
         # Redirect to home or another page if the user is not authenticated or not an admin
         return redirect(url_for('home'))
+
+
+@app.route('/book/<int:book_id>', methods=["GET", "POST"])
+def show_book(book_id):
+    book = Books.query.get(book_id)
+
+    books = Books.query.all()
+
+    if request.method == 'POST' and current_user.is_authenticated:
+        book_id_to_add = request.form.get('add_to_cart')
+        if book_id_to_add:
+            book = Books.query.get(int(book_id_to_add))
+            if book:
+                cart_item = Cart(user_id=current_user.id, book_id=book.id, quantity=1)
+                db.session.add(cart_item)
+                db.session.commit()
+                return redirect('/')
+    return render_template('book.html', book=book)
+
+
+
 
 
 @app.route('/logout')

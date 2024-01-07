@@ -15,7 +15,7 @@
           {% for book in books %}
         <div class="col">
           <div class="card shadow">
-              <a href=""><img src="{{ book.img_url }}" class="card-img-top" height="300" alt="Picture of the book"></a>
+              <a href="{{ url_for('show_book', book_id=book.id) }}"><img src="{{ book.img_url }}" class="card-img-top" height="300" alt="Picture of the book"></a>
               <div class="card-body beige">
                   <a class="book-a-tag" href=""><b><p class="card-text text-dark my-0 book-title">{{ book.title }}</p></b></a>
                   <a class="author" href=""><small class="text-body-white"><b>{{ book.author }}</b></small></a>
