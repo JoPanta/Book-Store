@@ -121,7 +121,6 @@ def home():
     books = Books.query.all()
 
     books_in_cart = get_books_in_cart()
-
     if request.method == 'POST' and current_user.is_authenticated:
         book_id_to_add = request.form.get('add_to_cart')
         if book_id_to_add:
