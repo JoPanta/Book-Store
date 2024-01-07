@@ -1,20 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container my-5">
-  <div class="p-5 text-center bg-body-tertiary rounded-3">
-    <svg class="bi mt-4 mb-3" style="color: var(--bs-indigo);" width="100" height="100"><use xlink:href="#bootstrap"></use></svg>
-    <h1 class="text-body-emphasis">Thank You</h1>
-    <p class="col-lg-8 mx-auto fs-5 text-muted">
-      This is a custom jumbotron featuring an SVG image at the top, some longer text that wraps early thanks to a responsive <code>.col-*</code> class, and a customized call to action.
+
+<div class="position-relative overflow-hidden p-3 p-md-5 text-center" id="banner">
+    <div class="col-md-6 p-lg-2 mx-auto my-5">
+      <h1 class="display-1 fw-bold" id="bookstore-name">MidWorld BookStore</h1>
+      <h3 class="fw-bold mb-3" id="bookstore-surname">Your Portal to Fantasy Realms</h3>
+    </div>
+  </div>
+
+
+
+<div class="container my-5 beige">
+  <div class="p-5 text-center rounded-3 beige">
+    <h1 class="text-body-emphasis mb-5">Thank You</h1>
+    <p class="col-lg-8 mx-auto fs-5 text-muted"> "Thanks for your purchase! Just a heads-up – our team of quirky,
+      caffeine-fueled writers is feverishly typing away in the basement to bring you the thrilling
+      sequel to your order. Get ready for a literary rollercoaster!
     </p>
     <div class="d-inline-flex gap-2 mb-5">
-      <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button">
-        Call to action
-        <svg class="bi ms-2" width="24" height="24"><use xlink:href="#arrow-right-short"></use></svg>
+      <a href="/">
+      <button class="d-inline-flex align-items-center btn btn-dark btn-lg px-4 rounded-pill" type="button">
+        Find more books
       </button>
-      <button class="btn btn-outline-secondary btn-lg px-4 rounded-pill" type="button">
-        Secondary link
-      </button>
+        </a>
     </div>
   </div>
 </div>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, flash
+from flask import Flask, render_template, redirect, url_for, request, flash, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap5
 from flask_wtf import FlaskForm
@@ -256,6 +256,13 @@ def view_cart():
                     success_url=url_for('thanks', _external=True),
                     cancel_url=url_for("home", _external=True),
                 )
+
+                # Delete cart items after successful creation of checkout session
+                for cart_item in user_cart:
+                    db.session.delete(cart_item)
+                db.session.commit()
+
+
             except Exception as e:
                 return str(e)
 
@@ -271,11 +278,50 @@ def view_cart():
                     total_price += book.price
                     number_of_books += 1
                     books_to_buy.append(book)
-            return render_template('cart.html', cart=books_to_buy, total=total_price, number_of_books=number_of_books)
+            return render_template('cart.html', cart=books_to_buy, total=round(total_price, 2), number_of_books=number_of_books)
 
     else:
         flash('Please log in to view your cart.')
         return redirect(url_for('login'))
+
+
+@app.route("/delete-from-cart/<int:book_id>")
+def delete_from_cart(book_id):
+    # Check if the user is authenticated
+    if not current_user.is_authenticated:
+        abort(401)  # Unauthorized
+
+    # Get the cart item to delete
+    cart_item = Cart.query.filter_by(user_id=current_user.id, book_id=book_id).first()
+
+    # Check if the cart item exists
+    if not cart_item:
+        abort(404)  # Not Found
+
+    # Delete the cart item
+    db.session.delete(cart_item)
+    db.session.commit()
+
+    return redirect("/cart")
+
+
+@app.route('/delete-book/<int:book_id>')
+def delete_book(book_id):
+    # Check if the current user is authenticated and is an admin
+    if current_user.is_authenticated and current_user.id == 1:
+        book = Books.query.get(book_id)
+
+        if book:
+            # Delete the book from the database
+            db.session.delete(book)
+            db.session.commit()
+
+        # Redirect to the home page or wherever you want after deletion
+        return redirect(url_for('home'))
+    else:
+        # Redirect to home or another page if the user is not authenticated or not an admin
+        return redirect(url_for('home'))
+
 
 @app.route('/logout')
 def logout():
