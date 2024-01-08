@@ -377,6 +377,7 @@ def show_author(book_author):
 def search():
     q = request.args.get('q')
     print(q)
+    
 # case-insensitive search using ilike
     if q:
         results = Books.query.filter(or_(Books.title.ilike(f"%{q}%"), Books.author.ilike(f"%{q}%"))).order_by(Books.title.asc()).all()
