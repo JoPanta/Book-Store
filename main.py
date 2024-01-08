@@ -7,7 +7,7 @@ from wtforms.validators import DataRequired, URL
 import stripe
 from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy.orm import joinedload
+from sqlalchemy import or_
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -371,6 +371,20 @@ def show_book(book_id):
 def show_author(book_author):
     books = Books.query.filter_by(author=book_author).all()
     return render_template('author.html', books=books, book_author=book_author)
+
+
+
+@app.route('/search', methods=['GET'])
+def search():
+    q = request.args.get('q')
+
+    if q:
+        results = Books.query.filter(or_(Books.title.ilike(f"%{q}%"), Books.author.ilike(f"%{q}%"))).order_by(Books.title.asc()).all()
+    else:
+        results = []
+
+    return render_template("search_results.html", results=results)
+
 
 
 @app.route('/logout')

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="position-relative overflow-hidden p-3 p-md-5 text-center" id="banner">
+    <div class="col-md-6 p-lg-2 mx-auto my-5">
+      <h1 class="display-1 fw-bold" id="bookstore-name">MidWorld BookStore</h1>
+      <h3 class="fw-bold mb-3" id="bookstore-surname">Your Portal to Fantasy Realms</h3>
+    </div>
+</div>
+
+
+<div class="album py-5" id="body">
+    <div class="container mt-5">
+
+      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-3 mt-5">
+          {% for book in results %}
+        <div class="col">
+          <div class="card shadow">
+              <a href="{{ url_for('show_book', book_id=book.id) }}"><img src="{{ book.img_url }}" class="card-img-top" height="300" alt="Picture of the book"></a>
+              <div class="card-body beige">
+                  <a class="book-a-tag" href=""><b><p class="card-text text-dark my-0 book-title">{{ book.title }}</p></b></a>
+                  <a class="author" href=""><small class="text-body-white"><b>{{ book.author }}</b></small></a>
+                   <p class="card-text text-dark mb-0 ">{{ book.price }}$</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+<!--                <form action="/create-checkout-session/{{ book.id }}" method="POST">-->
+<!--                  <button type="submit" id="checkout-button" class="btn btn-sm btn-outline-dark mt-3">Buy</button>-->
+<!--                </form>-->
+                    {% if current_user.is_authenticated %}
+                    <form method="post" action="{{ url_for('home') }}">
+                    <input type="hidden" name="add_to_cart" value="{{ book.id }}">
+                    <button type="submit" id="cart-button" class="btn btn-sm btn-outline-dark mt-3">Add to Cart</button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="{{ url_for('login') }}">
+                    <input type="hidden" name="add_to_cart" value="{{ book.id }}">
+                    <button type="submit" id="cart-button_2" class="btn btn-sm btn-outline-dark mt-3">Add to Cart</button>
+                    </form>
+                    {% endif %}
+                    {% if current_user.is_authenticated and current_user.id == 1 %}
+                    <span>
+                    <a class="btn btn-sm btn-outline-dark mt-3" href="{{ url_for('delete_book', book_id=book.id) }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
+                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
+                        </svg>
+                    </a>
+                    </span>
+                    {% endif %}
+
+
+
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+{% endblock %}
