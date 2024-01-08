@@ -373,11 +373,11 @@ def show_author(book_author):
     return render_template('author.html', books=books, book_author=book_author)
 
 
-
 @app.route('/search', methods=['GET'])
 def search():
     q = request.args.get('q')
-
+    print(q)
+# case-insensitive search using ilike
     if q:
         results = Books.query.filter(or_(Books.title.ilike(f"%{q}%"), Books.author.ilike(f"%{q}%"))).order_by(Books.title.asc()).all()
     else:

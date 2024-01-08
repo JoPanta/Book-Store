@@ -32,10 +32,26 @@
             {% endif %}
         </ul>
 
-        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" action="{{ url_for('search') }}" method="GET">
-          <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search"
+          <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 form-inline" role="search" action="{{ url_for('search') }}" method="GET">
+            <div class="form-group">
+                <div class="input-group">
+                    <input class="form-control form-control-dark" placeholder="Search..." type="search" aria-label="Search"
                  name="q">
-        </form>
+                    <span class="input-group-btn">
+                        <button class="btn btn-dark" type="submit"><i class="bi bi-search"></i></button>
+                    </span>
+                </div>
+            </div>
+          </form>
+
+
+<!--        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" action="{{ url_for('search') }}" method="GET">-->
+<!--          <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search"-->
+<!--                 name="q">-->
+<!--            <span>-->
+<!--                <button type="button" class="btn btn-dark">Dark</button>-->
+<!--            </span>-->
+<!--        </form>-->
 
         <div class="text-end">
             {% if not current_user.is_authenticated: %}
@@ -72,7 +88,7 @@
 
 
 <div class="container">
-  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top footer">
     <div class="col-md-4 d-flex align-items-center">
       <b><span class="mb-3 mb-md-0" style="color: rgb(107, 112, 92);">© 2023 MidWorldBookStore, Inc</span></b>
     </div>
