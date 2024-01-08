@@ -367,7 +367,10 @@ def show_book(book_id):
     return render_template('book.html', book=book)
 
 
-
+@app.route('/author/<book_author>')
+def show_author(book_author):
+    books = Books.query.filter_by(author=book_author).all()
+    return render_template('author.html', books=books, book_author=book_author)
 
 
 @app.route('/logout')

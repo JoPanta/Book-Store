@@ -6,7 +6,12 @@
       <h1 class="display-1 fw-bold" id="bookstore-name">MidWorld BookStore</h1>
       <h3 class="fw-bold mb-3" id="bookstore-surname">Your Portal to Fantasy Realms</h3>
     </div>
+</div>
+
+<div class="px-4 py-5 my-5 text-center">
+    <h1 class="display-5 fw-bold text-body-emphasis">{{ book_author }}</h1>
   </div>
+
 
 <div class="album py-5" id="body">
     <div class="container mt-5">
@@ -18,7 +23,7 @@
               <a href="{{ url_for('show_book', book_id=book.id) }}"><img src="{{ book.img_url }}" class="card-img-top" height="300" alt="Picture of the book"></a>
               <div class="card-body beige">
                   <a class="book-a-tag" href=""><b><p class="card-text text-dark my-0 book-title">{{ book.title }}</p></b></a>
-                  <a class="author" href="{{ url_for('show_author', book_author=book.author) }}"><small class="text-body-white"><b>{{ book.author }}</b></small></a>
+                  <a class="author" href=""><small class="text-body-white"><b>{{ book.author }}</b></small></a>
                    <p class="card-text text-dark mb-0 ">{{ book.price }}$</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
@@ -58,6 +63,8 @@
         </div>
     {% endfor %}
   </div>
+
+
 
 
 {% endblock %}
