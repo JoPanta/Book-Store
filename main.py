@@ -8,10 +8,16 @@ import stripe
 from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import or_
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 Bootstrap5(app)
+
+
 
 # Configure Flask-Login
 login_manager = LoginManager()
@@ -25,9 +31,9 @@ def load_user(user_id):
 
 # stripe configuration
 app.config[
-    "STRIPE_PUBLIC_KEY"] = "pk_test_51OSP3yJsLunIJogOr4E931yptIqQEJgSLEMpbdgymXlrZoTjokeYPIJuDEbUYYNSFKcNaXVJhiPse6nzKTjpR1mV00OkuvAHzp"
+    "STRIPE_PUBLIC_KEY"] = os.environ.get('STRIPE_PUBLIC_KEY')
 app.config[
-    'STRIPE_SECRET_KEY'] = "sk_test_51OSP3yJsLunIJogOzzky5qw77aFjMYzb7XRWX4RBldEiakNBmiqM2FUdnbVXwQCRh6MhOYDi7hotk0LajhTZPQhi00VVcgbIzv"
+    'STRIPE_SECRET_KEY'] = os.environ.get('STRIPE_SECRET_KEY')
 stripe.api_key = app.config['STRIPE_SECRET_KEY']
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///books.db"
@@ -377,7 +383,7 @@ def show_author(book_author):
 def search():
     q = request.args.get('q')
     print(q)
-    
+
 # case-insensitive search using ilike
     if q:
         results = Books.query.filter(or_(Books.title.ilike(f"%{q}%"), Books.author.ilike(f"%{q}%"))).order_by(Books.title.asc()).all()
