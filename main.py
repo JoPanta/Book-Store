@@ -18,7 +18,6 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 Bootstrap5(app)
 
 
-
 # Configure Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
