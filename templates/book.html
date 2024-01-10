@@ -9,12 +9,14 @@
   </div>
 
 <div class="container">
-<div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-
-      <div class="col-lg-6">
+<div class="row flex-lg-row-reverse align-items-center g-2 py-5">
+             <div class="col-12 col-sm-6 col-lg-6 my-5">
+        <img src="{{ book.img_url }}" class="d-block mx-auto img-fluid" alt="Bootstrap Themes" width="250" loading="lazy">
+      </div>
+      <div class="col-12 col-sm-6 col-lg-6">
         <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">{{ book.title }}</h1>
           <a class="text-decoration-none text-dark fs-3" href=""><p class="my-4 display-7">{{ book.author }}</p></a>
-        <p class="lead">{{ book.review }}</p>
+        <p class="lead my-5">{{ book.review }}</p>
         <div class="d-grid gap-2 d-md-flex justify-content-md-start">
             {% if current_user.is_authenticated %}
             <form method="post" action="{{ url_for('show_book', book_id=book.id) }}">
@@ -28,9 +30,6 @@
             </form>
             {% endif %}
         </div>
-      </div>
-     <div class="col-10 col-sm-8 col-lg-6">
-        <img src="{{ book.img_url }}" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="300" loading="lazy">
       </div>
 </div>
 </div>

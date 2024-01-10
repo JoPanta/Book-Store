@@ -21,8 +21,8 @@
         </div>
     {% else %}
         <h4 class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-primary">Your cart</span>
-          <span class="badge bg-primary rounded-pill">{{ number_of_books }}</span>
+          <span class="text-dark">Your cart</span>
+          <span class="badge bg-danger rounded-pill">{{ number_of_books }}</span>
         </h4>
         <ul class="list-group mb-3">
             {% for book in cart %}
@@ -36,7 +36,7 @@
                   </a>
               </span>
             <div class="text-center">
-              <h6 class="my-0 book-title" style="max-width: 200">{{ book.title }}</h6>
+              <h6 class="my-0 book-title-cart mx-3" style="max-width: 200">{{ book.title }}</h6>
               <small class="text-body-secondary">{{ book.author }}</small>
             </div>
             <span class="text-body-secondary">{{ book.price }}$</span>
