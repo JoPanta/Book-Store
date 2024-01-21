@@ -214,6 +214,7 @@ def register():
         return redirect(url_for('home'))
     return render_template("register.html", form=form, current_user=current_user)
 
+
 def add_to_cart(book_id, user_id):
     try:
         book = Books.query.get(book_id)
